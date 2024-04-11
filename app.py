@@ -9,8 +9,6 @@ app = Flask(__name__)
 def obtenir_meteo():
     latitude = os.getenv("LAT")
     longitude = os.getenv("LONG")
-    print(latitude)
-    print(longitude)
 
     if latitude is None or longitude is None:
         return jsonify({'error': 'Latitude et longitude ?????'}), 400
