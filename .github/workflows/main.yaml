@@ -24,7 +24,3 @@ jobs:
       - name: Push Docker image dans Docker Hub
         run: docker push felixdvk/image_meteo:latest
       
-      - name: Run app
-        run: |
-          pip install flask
-          python app.py
