@@ -31,4 +31,4 @@ class DonneesMeteo:
                f"Nuages: {self.nuages['all']}%\n" \
                f"Lever du soleil: {self.lever_soleil}\n" \
                f"Coucher du soleil: {self.coucher_soleil}\n" \
-               f"Fuseau horaire: {self.timezone}"
+               f"Fuseau horaire: {self.timezone} "

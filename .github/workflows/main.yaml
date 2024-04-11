@@ -1,22 +1,17 @@
 name: Meteo Workflow
 
 on:
-  push:
+  push: 
     branches:
       - main
 
 jobs:
-
-  build:
-    runs-on: ubuntu-latest
   deploy:
-    needs: build
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
       - name: Push Docker image dans Docker Hub
         uses: docker/build-push-action@v2
         with:
@@ -24,5 +19,5 @@ jobs:
           push: true
           tags: felixdvk/image_meteo:latest
         env:
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD}}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME}}
