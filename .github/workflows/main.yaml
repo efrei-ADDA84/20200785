@@ -19,3 +19,6 @@ jobs:
       
       - name: Build Docker image
         run: docker build -t felixdvk/image_meteo:latest .
+      
+      - name: Push Docker image dans Docker Hub
+        run: docker push felixdvk/image_meteo:latest
