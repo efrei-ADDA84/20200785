@@ -1,20 +1,48 @@
-name: GitHub Actions Demo
-on: [push]
-jobs:
-  Explore-GitHub-Actions:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+name: Meteo Workflow
 
-      - name: Check out repository code
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository code
         uses: actions/checkout@v3
 
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner for EFREI."
-
-      - name: List files in the repository
+      - name: Installation Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+        
+      - name: Installation dépendances
         run: |
-          ls ${{ github.workspace }}
+          python -m pip install --upgrade pip
+          
 
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploiement wrapper meteo
+        run: |
+          docker build -t image_meteo .
+          docker run --env LAT="48.866667" --env LONG="2.333333" --env APIKEY="${{secrets.OPENWEATHER_API_KEY}}" image_meteo
+
+      - name: Push Docker image dans Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: felixdvk/image_meteo:latest
+        env:
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
