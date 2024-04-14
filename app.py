@@ -1,29 +1,40 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import requests
 from wrapper import DonneesMeteo
 import os
+from prometheus_client import Counter
 
-app = Flask(__name__)
+appli = Flask(__name__)
 
-@app.route('/meteo', methods=['GET'])
+# compter le nombre de requetes 
+request_cpt = Counter('nb_requetes', 'Nombre requetes total')
+
+@appli.route('/', methods=['GET'])
 def obtenir_meteo():
-    latitude = os.getenv("LAT")
-    longitude = os.getenv("LONG")
 
-    if latitude is None or longitude is None:
+    request_cpt.inc() # on incremente le compteur à chaque nouvelle requete
+
+    lat = request.args.get("lat")
+    long = request.args.get("lon")
+
+    if lat is None or long is None:
         return jsonify({'error': 'Latitude et longitude ?????'}), 400
 
-    api_key = os.getenv("APIKEY")
+    api_key = os.environ.get("APIKEY")
     if not api_key:
         return jsonify({'error': 'Clé API OpenWeather ????'}), 500
 
-    url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={api_key}&units=metric"
+    url = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={long}&appid={api_key}&units=metric"
     reponse = requests.get(url)
     donnees = reponse.json()
 
-    info_meteo = DonneesMeteo(donnees)
+    if reponse.status_code == 200:
+        description = donnees['weather'][0]['description'] #  Récupérer les informations sur le ciel
+        temperature = donnees['main']['temp'] # et sur la température
+        return jsonify({'Meteo': description, 'temperature': temperature}), 200
+    else:
+        return jsonify({'error': 'Problème de récupération des données...'}), 500
 
-    return jsonify(info_meteo.__dict__)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    appli.run(host='0.0.0.0', port=8081)
