@@ -31,13 +31,12 @@ Pour cela, j'ai utilisé la librairie flask, puis pour lancer l'application, j'a
 
 # Création de l'instance de containeur :
 
-L'objectif du TP est de déployer le containeur sur ACR (Azure Container Registry). Pour cela, il a fallu configurer dans un premier temps les secrets sur github, comme fait auparavant.  Ainsi, nous avons configuré AZURE_CREDENTIALS pour s'authentifier avec l'API Azure, REGISTRY_LOGIN_SERVER (efreidevops.azurecr.io), REGISTRY_USERNAME,
-REGISTRY_PASSWORD et RESOURCE_GROUP (ADDA84-CTP).  Par suite, le but était de créer avec une certaine configuration explicitée dans les consignes un containeur, à l'aide de ```container registry```, un service proposé par azure pour créer ses containeurs. Une erreur qui est tout de suite apparu était : Le client « felix.devynck@efrei.net » n'est pas autorisé à effectuer l'action, qui m'a handicapé dans mon avancement. La solution pour y pallier était de... .
+L'objectif du TP est de déployer le containeur sur ACR (Azure Container Registry). Pour cela, nous avons utilisé les secrets sur github, comme fait auparavant, déjà déclarés dans organisation secrets.  Par suite, le but était de créer un containeur, à l'aide dans l'espace efreidevops.
 
 ## Mettre à disposition son image format API sur ACR 
-Une fois le containeur crée, il a fallu déployer son image sur ACR. Pour cela, j'ai utilisé des github actions pour automatiser les processus de déploiement. Pour cela, rien de très sorcier, on crée différents jobs qui utilisent les secrets. Un pour l'authentification à Azure et un pour build et push l'image grâce au dockerfile (où l'on spécifie le nom de l'instance et les variables d'environnement, ici la clé API).
+Une fois le containeur crée, il a fallu déployer son image sur ACR. Pour cela, j'ai utilisé des github actions pour automatiser les processus de déploiement. Pour cela, rien de très sorcier, on crée différents jobs qui utilisent les secrets. Un pour l'authentification à Azure et un pour build et push l'image grâce au dockerfile (où l'on spécifie le nom de l'instance et les variables d'environnement, ici la clé API, declarée dans les secrets).
 
 ## Deployer l'image sur ACI 
 
-ACR est un service de stockage d'images de conteneurs, tandis qu'ACI est un service d'exécution de conteneurs sans serveur. Pour cette étape, on utilise les github actions comme d'habitude. On se connecte grâce au secret AZURE_CREDENTIALS puis on le déploie avec la commande azure/aci-deploy@v1 en spécifiant tous les secrets et variables dont on a besoin.
+ACR est un service de stockage d'images de conteneurs, tandis qu'ACI est un service d'exécution de conteneurs sans serveur. Pour cette étape, on utilise les github actions comme d'habitude. On se connecte grâce au secret AZURE_CREDENTIALS puis on le déploie avec la commande azure/aci-deploy@v1 en spécifiant tous les secrets et variables dont on a besoin. Pour télécharger l'image, on utilise la commande curl, en utilisant pour numéro d'identifiant 20200785 et germanywestcentral pour région. 
 
