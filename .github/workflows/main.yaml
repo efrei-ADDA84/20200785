@@ -15,12 +15,48 @@ jobs:
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME}}
-          password: ${{ secrets.DOCKER_TOKEN}}
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_TOKEN}}
       
       - name: Build Docker image
         run: docker build -t felixdvk/image_meteo:latest .
       
       - name: Push Docker image dans Docker Hub
         run: docker push felixdvk/image_meteo:latest
-      
+
+# tp3 sur Azure :
+      - name: Identification sur Azure
+      uses: docker/login-action@v1
+      with: 
+        registry: ${{secrets.REGISTRY_LOGIN_SERVER}}
+        username: ${{secrets.REGISTRY_USERNAME}}
+        password: ${{secrets.REGISTRY_PASSWORD}}
+
+
+    - name: Build et push de l'image Docker sur Azure Container Registry 
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: ${{secrets.REGISTRY_LOGIN_SERVER}}/20200785:latest
+      env:
+        OPENWEATHER_API: ${{secrets.API_OPENWEATHER}}
+
+    - name: 'Authentification avec Azure CLI'
+      uses: azure/login@v1
+      with:
+        creds: ${{secrets.AZURE_CREDENTIALS}}
+
+    - name: 'Deploiement du containeur sur ACI'
+      uses: azure/aci-deploy@v1
+      with:
+        name: 20200785
+        resource-group: ${{secrets.RESOURCE_GROUP}}
+        location: 'francecentral'
+        dns-name-label: devops-20200785
+        image: ${{secrets.REGISTRY_LOGIN_SERVER}}/20200785:latest
+        registry-login-server: ${{secrets.REGISTRY_LOGIN_SERVER}}
+        registry-username: ${{secrets.REGISTRY_USERNAME}}
+        registry-password: ${{secrets.REGISTRY_PASSWORD}}
+        secure-environment-variables: OPENWEATHER_API_KEY=${{secrets.API_OPENWEATHER}}

@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request
 import requests
-from wrapper import DonneesMeteo
 import os
 from prometheus_client import Counter
 
