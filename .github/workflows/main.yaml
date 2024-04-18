@@ -24,7 +24,6 @@ jobs:
       - name: Push Docker image dans Docker Hub
         run: docker push felixdvk/image_meteo:latest
 
-# tp3 sur Azure :
       - name: Identification sur Azure
       uses: docker/login-action@v1
       with: 
