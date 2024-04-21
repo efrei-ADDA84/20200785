@@ -40,3 +40,6 @@ Une fois le containeur crée, il a fallu déployer son image sur ACR. Pour cela,
 
 ACR est un service de stockage d'images de conteneurs, tandis qu'ACI est un service d'exécution de conteneurs sans serveur. Pour cette étape, on utilise les github actions comme d'habitude. On se connecte grâce au secret AZURE_CREDENTIALS puis on le déploie avec la commande azure/aci-deploy@v1 en spécifiant tous les secrets et variables dont on a besoin. Pour télécharger l'image, on utilise la commande curl, en utilisant pour numéro d'identifiant 20200785 et germanywestcentral pour région. 
 
+## TP4
+
+Ce TP avait pour but de nous apprendre à utiliser terraform. Pour cela, nous avons crée trois fichiers : un pour les providers, un pour les variables, et un main pour crée 3 différentes ressources : une pour générer une clé SSH, une pour créer l'interface réseau et enffin une pour créer la machine virtuelle. Enfin, on s'est connecté à Azure grace à l'az login.
